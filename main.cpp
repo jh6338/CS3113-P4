@@ -50,6 +50,7 @@ glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
 
 bool success = false;
 bool gameEnd = false;
+bool start = true; 
 int enemiesAlive = ENEMY_COUNT; 
 
 void DrawText(ShaderProgram* program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position);
@@ -116,7 +117,7 @@ void Initialize() {
 	state.player->position = glm::vec3(-4, -1, 0);
 	state.player->movement = glm::vec3(0);
 	state.player->acceleration = glm::vec3(0, -9.81f, 0);
-	state.player->speed = 1.5f;
+	state.player->speed = 1.75f;
 	state.player->textureID = LoadTexture("george_0.png");
 
 	state.player->animRight = new int[4]{ 3, 7, 11, 15 };
@@ -202,7 +203,7 @@ void Initialize() {
 	state.enemies[2].entityType = ENEMY;
 	state.enemies[2].textureID = birdTextureID; 
 	state.enemies[2].position = glm::vec3(4.25f, 2, 0); 
-	state.enemies[2].speed = 0.25f; 
+	state.enemies[2].speed = 0.1f; 
 	state.enemies[2].aiType = UPANDDOWN; 
 
 	state.enemies[2].animIndices = new int[8]{ 0, 1, 2, 3, 4, 5, 6, 7 }; 
@@ -242,6 +243,7 @@ void ProcessInput() {
 				if (state.player->collidedBottom) {
 					state.player->jump = true;
 				}
+				start = false; 
 				break;
 			}
 			break; // SDL_KEYDOWN
@@ -321,6 +323,11 @@ void Update() {
 
 void Render() {
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	if (start) {
+		DrawText(&program, fontTextureID, "Press Spacebar to jump", 0.5f, -0.25f, glm::vec3(-2.75f, 1.0f, 0)); 
+		DrawText(&program, fontTextureID, "Jump on Enemies to defeat them", 0.5f, -0.25f, glm::vec3(-3.5f, 0.5f, 0)); 
+	}
 
 	for (int i = 0; i < PLATFORM_COUNT; ++i) {
 		state.platforms[i].Render(&program);
